@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inputs = new bool[6];
+        inputs = new bool[8];
 
         Initialize();
     }
@@ -67,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Move(inputDirections, inputs[4], inputs[5]);
+        transform.GetChild(2).GetComponent<ShootLogic>().Shoot(inputs[6], inputs[7]);
     }
 
     private void Move(Vector2 inputDirection, bool jump, bool sprint)
@@ -82,11 +83,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (_controller.isGrounded)
         {
-            print("grounded is true");
             yVelocity = 0f;
             if (jump)
             {
-                print($"Jump value is: {jump}");
                 yVelocity = jumpValue;
             }
         }

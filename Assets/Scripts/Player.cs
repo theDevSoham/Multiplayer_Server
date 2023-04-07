@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Riptide;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private PlayerMovement movement;
 
+    public int health = 100;
+
     private void OnDestroy()
     {
         list.Remove(Id);
@@ -25,11 +28,12 @@ public class Player : MonoBehaviour
         foreach (Player otherPlayer in list.Values)
             otherPlayer.SendSpawned(id);
 
-        Player player = Instantiate(GameLogic.Singleton.PlayerPrefab, new Vector3(0f, 1f, 0f), Quaternion.identity).GetComponent<Player>();
+        Player player = Instantiate(GameLogic.Singleton.PlayerPrefab, new Vector3(Random.Range(-5, 5), 1f, Random.Range(-5, 5)), Quaternion.identity).GetComponent<Player>();
 
         player.name = $"Player {id} ({(string.IsNullOrEmpty(username) ? "Guest" : username)})";
         player.Id = id;
         player.Username = $"{(string.IsNullOrEmpty(username) ? "Guest" : username)}";
+        player.health = 100;
         player.SendSpawned();
 
         list.Add(id, player);
@@ -48,6 +52,7 @@ public class Player : MonoBehaviour
     private Message AddData(Message message)
     {
         message.AddUShort(Id);
+        message.AddInt(health);
         message.AddString(Username);
         message.AddVector3(transform.position);
         return message;
@@ -67,7 +72,7 @@ public class Player : MonoBehaviour
     {
         if(list.TryGetValue(fromClientId, out Player player))
         {
-            player.Movement.SetInput(message.GetBools(6), message.GetVector3());
+            player.Movement.SetInput(message.GetBools(8), message.GetVector3());
         }
     }
 }

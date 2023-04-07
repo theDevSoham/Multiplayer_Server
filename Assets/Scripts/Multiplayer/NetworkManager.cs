@@ -12,6 +12,7 @@ enum ServerToClientId : ushort
 {
     playerSpawned = 1,
     playerMovement,
+    updateHealth,
 }
 
 public class NetworkManager : MonoBehaviour
